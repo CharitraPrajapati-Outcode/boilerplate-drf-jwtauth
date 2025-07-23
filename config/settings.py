@@ -43,6 +43,10 @@ INSTALLED_APPS = [
 
     # Third-party apps
     'rest_framework',
+
+    # Local apps
+    'apps.user',
+    'apps.common',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +57,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Third-party middleware
+    'django_currentuser.middleware.ThreadLocalUserMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -153,3 +160,6 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
 }
+
+# Custom User Model
+AUTH_USER_MODEL = 'user.User'
