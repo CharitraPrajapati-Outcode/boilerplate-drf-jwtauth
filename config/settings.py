@@ -43,6 +43,8 @@ INSTALLED_APPS = [
 
     # Third-party apps
     'rest_framework',
+    'drf_yasg',
+    'corsheaders',
 
     # Local apps
     'apps.user',
@@ -60,6 +62,8 @@ MIDDLEWARE = [
 
     # Third-party middleware
     'django_currentuser.middleware.ThreadLocalUserMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -145,6 +149,7 @@ if DEBUG is True:
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'static'),  # Use this for local development
     ]
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
@@ -163,3 +168,68 @@ REST_FRAMEWORK = {
 
 # Custom User Model
 AUTH_USER_MODEL = 'user.User'
+
+# drf-yasg Swagger Settings
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'PERSIST_AUTH': True,
+    'REFETCH_SCHEMA_WITH_AUTH': True,
+    'REFETCH_SCHEMA_ON_LOGOUT': True,
+    'DEEP_LINKING': True,
+
+    # default api Info if none is otherwise given; should be an import string to an openapi.Info object
+    # 'DEFAULT_INFO': 'config.swagger.swagger_info',
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'in': 'header',
+            'name': 'Authorization',
+            'type': 'apiKey',
+            'description': 'Please pass token as Bearer {{token}}'
+        },
+    },
+
+    # default inspector classes, see advanced documentation
+    "DEFAULT_PAGINATOR_INSPECTORS": [
+        'drf_yasg.inspectors.DjangoRestResponsePagination',
+        'drf_yasg.inspectors.CoreAPICompatInspector',
+    ],
+
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_yasg.inspectors.SwaggerAutoSchema',
+    'DEFAULT_FIELD_INSPECTORS': [
+        'drf_yasg.inspectors.CamelCaseJSONFilter',
+        'drf_yasg.inspectors.InlineSerializerInspector',
+        'drf_yasg.inspectors.RelatedFieldInspector',
+        'drf_yasg.inspectors.ChoiceFieldInspector',
+        'drf_yasg.inspectors.FileFieldInspector',
+        'drf_yasg.inspectors.DictFieldInspector',
+        'drf_yasg.inspectors.SimpleFieldInspector',
+        'drf_yasg.inspectors.StringDefaultFieldInspector',
+    ],
+}
+
+REDOC_SETTINGS = {
+    'LAZY_RENDERING': True,
+}
+
+# CORS configuration
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+)
